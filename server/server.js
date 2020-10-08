@@ -55,14 +55,24 @@ const io = socketIO(server);
 
 io.on('connection', (socket) => {
   console.log('user connected! socket info:', socket.id);
-  const userId = socket.id;
+  // console.log('different id check', socket.client.id);
+  // const userId = socket.id;
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
-  socket.on('stateChanged', () => {
-    // broadcast the new state to all players
-    // middleWareX, middleWareY -> broadcast
-    console.log('state changed');
+  socket.on('playerConnected', (req, res) => {
+    // currentPlayer & gameState -> server -> emit broadcast -> player2
+    console.log('Sending player ID to client', socket.id);
+    res(socket.id);
+  });
+
+  // io.emit('sendPlayerState', (req, res) => {
+  //   console.log(req);
+  // });
+  // io.emit('fromServer', { hello: 'server-side' });
+
+  socket.on('sendPlayerState', (req, res) => {
+    console.log('state on the server', req);
   });
 });

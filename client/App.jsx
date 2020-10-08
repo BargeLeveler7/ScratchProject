@@ -9,8 +9,8 @@ import './style.css';
 import CardComponent from './Picture';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       cardCreated: false,
       user: {}, // {username, bestRecord, played}
@@ -25,7 +25,10 @@ class App extends Component {
       cardNeedUpdate: false,
       leaderBoard: {}, // { bestRecord: [{username: bestRecord}, ...], {mostPlays: [{username: played}, ... ] }  }
       found: null,
+      // initialized to null. when first player logs in, set to players[0]
+      currentPlayer: null,
     };
+
     this.logInUser = this.logInUser.bind(this);
     this.signUpUser = this.signUpUser.bind(this);
     this.onCardClick = this.onCardClick.bind(this);
@@ -51,6 +54,17 @@ class App extends Component {
       cardsArray.sort(() => Math.random() - 0.5); // Randomizer function
     }
     return cardsArray;
+  }
+
+  initGame() {
+    // get player ID and push it to state function1
+    // create cards function2
+  }
+
+  gameLogic() {
+    // currentPlayer: players[0]
+    // clickCount if even number, increment the currentPlayer to players[1]
+    // currentState -> server -> whoever next player is
   }
 
   componentDidUpdate() {
@@ -137,7 +151,9 @@ class App extends Component {
   }
 
   onCardClick(id, cardStatus) {
-    // console.log('received from id', id, cardStatus);
+    // check if current player's socket.id === currentPlayer
+    // if (currentPlayer.id === )
+
     const flipped = true;
     const clickCount = this.state.clickCount + 1;
     // on odd clicks (ie first click of the turn)
@@ -161,7 +177,7 @@ class App extends Component {
       const cardsArray = [...this.state.cardsArray];
       cardsArray[id] = currentCard;
       // at this point, the 2nd card is not flipped yet, so we need to update the state to complete the flipping
-      // after components have been updated, we will check for if previous card value matches the current card value
+      // after components have been updated, we will check if previous card value matches the current card value
       return this.setState({
         ...this.state,
         cardsArray,
