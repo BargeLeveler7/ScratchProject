@@ -3,39 +3,52 @@ import Board from './Board.jsx';
 import InfoContainer from './InfoContainer.jsx';
 import LeaderBoard from './LeaderBoard';
 import Message from './Message';
-import io from 'socket.io-client';
-
-const ENDPOINT = 'http://127.0.0.1:3000';
-const socket = io(ENDPOINT);
+import socket from '../socket.js';
 
 const Game = (props) => {
   // first hook nate has written:
-  const [players, setPlayers] = useState([]);
-  // TODO: Figure out which game state we need
+  // const [ players, setPlayers ] = useState([]);
 
-  useEffect(() => {
-    // setPlayer ID
-    getSocketID();
-  }, []);
+  // const [ turnOwner, setTurnOwner ] = useState(null);
+  // const [ currentPlayerID, setCurrentPlayerID ] = useState(null);
+  const [ playerClicks, setPlayerClicks ] = useState(0);
 
-  const getSocketID = () => {
-    socket.emit('playerConnected', { hello: 'world' }, (id) => {
-      // set the player state to whoever logged in
-      setPlayers([id]);
-      // broadcast the state change to the server
-      socket.emit('sendPlayerState', { playerState: [...players, id] });
-    });
-  };
+  useEffect(
+    () => {
+      // set turnOwner to current owner if turnOwner is null
+      // if (!turnOwner) {
+      //   setTurnOwner(props.userID);
+      // }
 
-  // const emitPlayerState = () => {
-  //   socket.emit('sendPlayerState', { playerState: players });
-  // };
+      // if we're at two clicks, change player (handled by the backend)
+      if (playerClicks === 2) {
+        // socket.emit('next-player', turnOwner, (newTurnOwner) => {
+        //   setTurnOwner(newTurnOwner);
+        // });
+
+        socket.emit('next-player', props.state.turnOwner);
+        // dummy data to simulate another player's 'turn'
+        // setTurnOwner(12);
+        // dummy data
+
+        setPlayerClicks(0);
+      }
+    },
+    [ playerClicks ]
+  );
 
   return (
     <div className="Game">
       <InfoContainer state={props.state} />
       <Message state={props.state} />
-      <Board state={props.state} onCardClick={props.onCardClick} />
+      <Board
+        setPlayerClicks={setPlayerClicks}
+        playerClicks={playerClicks}
+        turnOwner={props.state.turnOwner}
+        currentPlayerID={props.state.userID}
+        state={props.state}
+        onCardClick={props.onCardClick}
+      />
       <LeaderBoard leaderBoard={props.state.leaderBoard} />
     </div>
   );

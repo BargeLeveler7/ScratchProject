@@ -6,7 +6,7 @@
   "scripts": {
     "create": "webpack",
     "client": "webpack-dev-server --open",
-    "server": "nodemon server/server.js",
+    "server": "node ./server/server.js",
     "dev": "npm run client & npm run server"
   },
   "repository": {

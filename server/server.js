@@ -7,8 +7,11 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const socketIO = require('socket.io');
 const apiRouter = require('./routes/api');
+const socketController = require('./controllers/socketController');
 
 // const session = require('express-session')
+
+// lsof -nP -iTCP:8082 | grep LISTEN
 
 // mongo "mongodb+srv://cluster0.bepyw.mongodb.net/cardgame" --username BargeLeveler7
 // codesmithMongoDB
@@ -54,25 +57,20 @@ const io = socketIO(server);
  */
 
 io.on('connection', (socket) => {
-  console.log('user connected! socket info:', socket.id);
-  // console.log('different id check', socket.client.id);
-  // const userId = socket.id;
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on('new-player', (data) => {
+    socketController.addPlayer(data);
   });
 
-  socket.on('playerConnected', (req, res) => {
-    // currentPlayer & gameState -> server -> emit broadcast -> player2
-    console.log('Sending player ID to client', socket.id);
-    res(socket.id);
-  });
+  socket.on('next-player', (currentTurnOwner, fn) => {
+    // console.log('hello from nextPlayer socket ON');
+    const nextPlayerID = socketController.nextPlayer(currentTurnOwner);
+    // console.log('nextPlayerID:', nextPlayerID);
 
-  // io.emit('sendPlayerState', (req, res) => {
-  //   console.log(req);
-  // });
-  // io.emit('fromServer', { hello: 'server-side' });
+    // fn(nextPlayerID);
+    // find where currentTurnOwner is
+    // return the next turn owner
 
-  socket.on('sendPlayerState', (req, res) => {
-    console.log('state on the server', req);
+    // emit a new event to all clients and send them currentTurnOwner
+    io.emit('set-turn-owner', nextPlayerID);
   });
 });

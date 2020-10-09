@@ -8,6 +8,10 @@ const Board = (props) => {
     for (let i = 0; i < 16; i += 1) {
       cardsArray.push(
         <Card
+          setPlayerClicks={props.setPlayerClicks}
+          playerClicks={props.playerClicks}
+          currentPlayerID={props.currentPlayerID}
+          turnOwner={props.turnOwner}
           id={i}
           key={`Card${i}`}
           cardValue={props.state.cardsArray[i].cardValue}
@@ -18,7 +22,7 @@ const Board = (props) => {
     }
     return <div className="board">{cardsArray}</div>;
   } else {
-    return <div className="board"></div>;
+    return <div className="board" />;
   }
 };
 export default Board;

@@ -1,16 +1,7 @@
 import React from 'react';
 
 const Message = (props) => {
-  const names = [
-    'Will',
-    'Phill',
-    'Kyle',
-    'Sara',
-    'Keiran',
-    'Jeho',
-    'Wayne',
-    'Midori',
-  ];
+  const names = [ 'Will', 'Phil', 'Kyle', 'Sara', 'Keiran', 'Jeho', 'Wayne', 'Midori' ];
   const prevVal = props.state.previousCard.cardValue;
   const curVal = props.state.currentCard.cardValue;
   const found = props.state.found;
